@@ -1,0 +1,17 @@
+# Node
+node_modules
+dist
+
+# Python
+__pycache__
+.env
+.venv
+
+# Docker
+.env
+docker-compose.override.yml
+
+# OS / Editor
+.DS_Store
+.vscode
+.idea
