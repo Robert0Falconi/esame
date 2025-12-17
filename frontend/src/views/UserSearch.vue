@@ -14,7 +14,12 @@
         </div>
         <div class="form-group">
           <label>Genere</label>
-          <input v-model="searchParams.genre" @input="handleSearch" placeholder="Cerca per genere..." />
+          <select v-model="searchParams.genre" @change="handleSearch">
+            <option value="">Tutti i generi</option>
+            <option v-for="genre in genres" :key="genre" :value="genre">
+              {{ genre }}
+            </option>
+          </select>
         </div>
       </div>
       <div class="checkbox-group">
@@ -93,6 +98,7 @@ export default {
   name: 'UserSearch',
   setup() {
     const books = ref([])
+    const genres = ref([])
     const loading = ref(false)
     const error = ref('')
     const selectedBook = ref(null)
@@ -117,6 +123,16 @@ export default {
       date.setDate(date.getDate() + 1)
       return date.toISOString().split('T')[0]
     })
+
+    const loadGenres = async () => {
+      try {
+        const allBooks = await api.searchBooks({ available_only: false })
+        const uniqueGenres = [...new Set(allBooks.map(book => book.genre))].sort()
+        genres.value = uniqueGenres
+      } catch (err) {
+        console.error('Error loading genres:', err)
+      }
+    }
 
     const handleSearch = async () => {
       loading.value = true
@@ -171,11 +187,13 @@ export default {
     }
 
     onMounted(() => {
+      loadGenres()
       handleSearch()
     })
 
     return {
       books,
+      genres,
       loading,
       error,
       searchParams,
@@ -226,15 +244,21 @@ h1 {
   margin-bottom: 0.5rem;
   font-weight: 500;
   color: #34495e;
-  position: relative !important;
 }
 
-.form-group input {
+.form-group input,
+.form-group select {
   width: 100%;
   padding: 0.5rem;
   border: 1px solid #ddd;
   border-radius: 4px;
-  color: white !important;
+  font-size: 1rem;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #3498db;
 }
 
 .checkbox-group label {
