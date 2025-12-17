@@ -35,16 +35,10 @@ BOOKS_DATA = [
 ]
 
 USERS_DATA = [
-    {"library_card": "LIB001", "first_name": "Mario", "last_name": "Rossi", "email": "mario.rossi@email.it", "is_staff": False},
-    {"library_card": "LIB002", "first_name": "Laura", "last_name": "Bianchi", "email": "laura.bianchi@email.it", "is_staff": False},
-    {"library_card": "LIB003", "first_name": "Giuseppe", "last_name": "Verdi", "email": "giuseppe.verdi@email.it", "is_staff": False},
-    {"library_card": "LIB004", "first_name": "Eldar", "last_name": "Dedic", "email": "eldar.ferrari@email.it", "is_staff": False},
-    {"library_card": "LIB005", "first_name": "Francesco", "last_name": "Colombo", "email": "francesco.colombo@email.it", "is_staff": False},
-    {"library_card": "LIB006", "first_name": "Giulia", "last_name": "Romano", "email": "giulia.romano@email.it", "is_staff": False},
-    {"library_card": "LIB007", "first_name": "Marco", "last_name": "Esposito", "email": "marco.esposito@email.it", "is_staff": False},
-    {"library_card": "LIB008", "first_name": "Chiara", "last_name": "Ricci", "email": "chiara.ricci@email.it", "is_staff": False},
-    {"library_card": "LIB009", "first_name": "Alessandro", "last_name": "Marino", "email": "alessandro.marino@email.it", "is_staff": False},
-    {"library_card": "LIB010", "first_name": "Martina", "last_name": "Greco", "email": "martina.greco@email.it", "is_staff": False},
+    {"library_card": "LIB001", "first_name": "Marco", "last_name": "Di Pasquale", "email": "marco.di.pasquale@email.it", "is_staff": False},
+    {"library_card": "LIB004", "first_name": "Eldar", "last_name": "Dedic", "email": "eldar.dedic@email.it", "is_staff": False},
+    {"library_card": "LIB005", "first_name": "Francesco", "last_name": "Gallo", "email": "francesco.gallo@email.it", "is_staff": False},
+    {"library_card": "LIB006", "first_name": "Andrea", "last_name": "Calabrò", "email": "andrea.calabro@email.it", "is_staff": False},
     {"library_card": "STAFF001", "first_name": "Roberto", "last_name": "Falconi", "email": "roberto.falconi@biblioteca.it", "is_staff": True},
     {"library_card": "STAFF002", "first_name": "Carlotta", "last_name": "Forlino", "email": "carlotta.forlino@biblioteca.it", "is_staff": True},
 ]
@@ -58,7 +52,7 @@ def seed_database():
     db = SessionLocal()
     
     try:
-        # Check if database is already populated
+        # Check se il database è già popolato
         if db.query(models.Book).count() > 0:
             print("Database già popolato. Eliminazione dati esistenti...")
             db.query(models.Loan).delete()
