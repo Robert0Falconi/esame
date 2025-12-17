@@ -104,7 +104,7 @@ export default {
 
 .hero h1 {
   font-size: 2.5rem;
-  color: #2c3e50;
+  color: #1d1d1d;
   margin-bottom: 0.5rem;
 }
 
@@ -129,7 +129,7 @@ export default {
 
 .card h2 {
   margin-bottom: 1rem;
-  color: #2c3e50;
+  color: #1d1d1d;
 }
 
 .form-group {
@@ -139,7 +139,7 @@ export default {
 .form-group label {
     display: block;
     margin-bottom: -8px;
-    color: #34495e;
+    color: #1d1d1d;
     text-align: left;
     padding-left: 0px;
     font-weight: 600;
@@ -155,7 +155,7 @@ export default {
 
 .form-group input:focus {
   outline: none;
-  border-color: #3498db;
+  border-color: #009688;
 }
 
 .btn {
@@ -173,7 +173,7 @@ export default {
 }
 
 .btn-primary {
-  background: #3498db;
+  background: #009688;
   color: white;
 }
 
@@ -196,7 +196,7 @@ export default {
 }
 
 .error {
-  color: #e74c3c;
+  color: #ff5722;
   margin-top: 1rem;
   font-size: 0.9rem;
 }

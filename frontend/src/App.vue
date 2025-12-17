@@ -2,14 +2,14 @@
   <div id="app">
     <nav class="navbar">
       <div class="navbar-content">
-        <router-link to="/" class="logo pe-0 pe-md-5">
+        <router-link to="/" class="logo pe-0 pe-md-5" style="color: white !important;">
           Biblioteca
         </router-link>
         <div class="nav-links pt-1 d-flex flex-column flex-md-row">
           <div class="d-flex gap-4">
-            <router-link to="/">Home</router-link>
-            <router-link to="/search">Cerca Libri</router-link>
-            <router-link v-if="isStaff" to="/staff">Staff</router-link>
+            <router-link to="/"><span style="font-weight: 600 !important;">Home</span></router-link>
+            <router-link to="/search"><span style="font-weight: 600 !important;">Cerca Libri</span></router-link>
+            <router-link v-if="isStaff" to="/staff"><span style="font-weight: 600 !important;">Staff</span></router-link>
           </div>
           <div class="d-flex gap-2">
             <div v-if="isAuthenticated" class="user-menu">
@@ -27,7 +27,7 @@
 
     <footer class="footer">
       <!-- Anno dinamico -->
-      <p>&copy; {{ new Date().getFullYear() }} Sistema Gestione Biblioteca - Tutti i diritti riservati</p>
+      <p class="mb-0">&copy;{{ new Date().getFullYear() }} <a href="www.falconigrafica.it">Falconigrafica</a> | Sistema Gestione Biblioteca</p>
     </footer>
   </div>
 </template>
@@ -75,7 +75,7 @@ export default {
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: #f5f6fa;
-  color: #2c3e50;
+  color: #1d1d1d;
 }
 
 #app {
@@ -85,7 +85,7 @@ body {
 }
 
 .navbar {
-  background: #2c3e50;
+  background: #1d1d1d;
   color: white;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -119,9 +119,8 @@ body {
   transition: color 0.3s;
 }
 
-.nav-links a:hover,
-.nav-links a.router-link-active {
-  color: #3498db;
+.nav-links a:hover {
+  color: #009688;
 }
 
 .user-menu {
@@ -140,7 +139,7 @@ body {
 
 .btn-logout {
   padding: 0.5rem 1rem;
-  background: #e74c3c;
+  background: #ff5722;
   color: white;
   border: none;
   border-radius: 4px;
@@ -159,7 +158,7 @@ body {
 }
 
 .footer {
-  background: #34495e;
+  background: #1d1d1d;
   color: #ecf0f1;
   text-align: center;
   padding: 2rem;

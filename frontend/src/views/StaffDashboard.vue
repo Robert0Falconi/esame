@@ -53,7 +53,7 @@
             </thead>
             <tbody>
               <tr v-for="loan in overdueLoans" :key="loan.id" class="overdue-row">
-                <td>{{ loan.user.first_name }} {{ loan.user.last_name }}</td>
+                <td><span style="font-weight: 600;">{{ loan.user.first_name }} {{ loan.user.last_name }}</span></td>
                 <td>{{ loan.book.title }}</td>
                 <td>{{ formatDate(loan.start_date) }}</td>
                 <td>{{ formatDate(loan.expected_return_date) }}</td>
@@ -88,7 +88,7 @@
             </thead>
             <tbody>
               <tr v-for="loan in activeLoans" :key="loan.id">
-                <td>{{ loan.user.first_name }} {{ loan.user.last_name }}</td>
+                <td><span style="font-weight: 600;">{{ loan.user.first_name }} {{ loan.user.last_name }}</span></td>
                 <td>{{ loan.book.title }}</td>
                 <td>{{ formatDate(loan.start_date) }}</td>
                 <td>{{ formatDate(loan.expected_return_date) }}</td>
@@ -359,7 +359,7 @@ export default {
 }
 
 h1 {
-  color: #2c3e50;
+  color: #1d1d1d;
 }
 
 .stats-grid {
@@ -378,13 +378,13 @@ h1 {
 }
 
 .stat-card.warning {
-  background: #fff3cd;
+  background: #ffffff;
 }
 
 .stat-value {
   font-size: 2rem;
   font-weight: bold;
-  color: #2c3e50;
+  color: #1d1d1d;
   margin-bottom: 0.5rem;
 }
 
@@ -412,8 +412,8 @@ h1 {
 }
 
 .tab.active {
-  color: #3498db;
-  border-bottom-color: #3498db;
+  color: #009688;
+  border-bottom-color: #009688;
 }
 
 .loans-table {
@@ -434,22 +434,22 @@ th {
   padding: 1rem;
   text-align: center;
   font-weight: 600;
-  color: #2c3e50;
+  color: #1d1d1d;
   border-bottom: 2px solid #dee2e6;
 }
 
 td {
   padding: 1rem;
   border-bottom: 1px solid #dee2e6;
-  color: #34495e;
+  color: #1d1d1d;
 }
 
 tr.overdue-row {
-  background: #fff3cd;
+  background: #ffffff;
 }
 
 .warning-text {
-  color: #e74c3c;
+  color: #ff5722;
   font-weight: 600;
 }
 
@@ -487,7 +487,7 @@ tr.overdue-row {
 }
 
 .btn-primary {
-  background: #3498db;
+  background: #009688;
   color: white;
 }
 
@@ -543,7 +543,7 @@ tr.overdue-row {
 .form-group label {
     display: block;
     margin-bottom: -8px;
-    color: #34495e;
+    color: #1d1d1d;
     text-align: left;
     padding-left: 0px;
     font-weight: 600;
@@ -558,7 +558,7 @@ tr.overdue-row {
 }
 
 .penalty-warning {
-  background: #fff3cd;
+  background: #ffffff;
   padding: 1rem;
   border-radius: 4px;
   margin: 1rem 0;
@@ -596,7 +596,7 @@ tr.overdue-row {
 }
 
 .error {
-  color: #e74c3c;
+  color: #ff5722;
 }
 
 .success {

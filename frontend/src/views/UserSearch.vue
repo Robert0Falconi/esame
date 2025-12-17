@@ -40,7 +40,7 @@
     <div v-else class="books-grid">
       <div v-for="book in books" :key="book.id" class="book-card">
         <div class="book-info">
-          <h3>{{ book.title }}</h3>
+          <h4>{{ book.title }}</h4>
           <p class="author">di {{ book.author }}</p>
           <p class="genre">
             <span class="badge">{{ book.genre }}</span>
@@ -218,7 +218,7 @@ export default {
 }
 
 h1 {
-  color: #2c3e50;
+  color: #1d1d1d;
   margin-bottom: 2rem;
 }
 
@@ -240,7 +240,7 @@ h1 {
 .form-group label {
   display: block;
   margin-bottom: -8px;
-  color: #34495e;
+  color: #1d1d1d;
   text-align: left;
   padding-left: 0px;
   font-weight: 600;
@@ -258,7 +258,7 @@ h1 {
 .form-group input:focus,
 .form-group select:focus {
   outline: none;
-  border-color: #3498db;
+  border-color: #009688;
 }
 
 .checkbox-group label {
@@ -288,7 +288,7 @@ h1 {
 }
 
 .book-card h3 {
-  color: #2c3e50;
+  color: #1d1d1d;
   margin-bottom: 0.5rem;
 }
 
@@ -304,7 +304,7 @@ h1 {
 
 .badge {
   display: inline-block;
-  background: #3498db;
+  background: #009688;
   color: white;
   padding: 0.25rem 0.75rem;
   border-radius: 12px;
@@ -333,7 +333,7 @@ h1 {
 }
 
 .status.unavailable {
-  color: #e74c3c;
+  color: #ff5722;
 }
 
 .copies {
@@ -351,7 +351,7 @@ h1 {
 }
 
 .btn-primary {
-  background: #3498db;
+  background: #009688;
   color: white;
 }
 
@@ -403,7 +403,7 @@ h1 {
 }
 
 .error {
-  color: #e74c3c;
+  color: #ff5722;
 }
 
 .success {

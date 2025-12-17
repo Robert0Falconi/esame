@@ -184,7 +184,7 @@ export default {
 }
 
 h1 {
-  color: #2c3e50;
+  color: #1d1d1d;
 }
 
 .btn {
@@ -198,7 +198,7 @@ h1 {
 }
 
 .btn-primary {
-  background: #3498db;
+  background: #009688;
   color: white;
 }
 
@@ -211,10 +211,10 @@ h1 {
 }
 
 .section h2 {
-  color: #2c3e50;
+  color: #1d1d1d;
   margin-bottom: 1rem;
   padding-bottom: 0.5rem;
-  border-bottom: 2px solid #3498db;
+  border-bottom: 2px solid #009688;
 }
 
 .loans-grid {
@@ -236,6 +236,7 @@ h1 {
   align-items: center;
   margin-bottom: 1rem;
 }
+
 
 .status-badge {
   display: inline-block;
@@ -261,7 +262,7 @@ h1 {
 }
 
 .status-badge.late {
-  background: #fff3cd;
+  background: #ffffff;
   color: #856404;
 }
 
@@ -270,17 +271,17 @@ h1 {
 }
 
 .loan-card h3 {
-  color: #2c3e50;
+  color: #1d1d1d;
   margin-bottom: 1rem;
 }
 
 .loan-details p {
   margin: 0.5rem 0;
-  color: #34495e;
+  color: #1d1d1d;
 }
 
 .warning-text {
-  color: #e74c3c;
+  color: #ff5722;
   font-weight: 500;
 }
 
@@ -302,14 +303,14 @@ th {
   padding: 1rem;
   text-align: center;
   font-weight: 600;
-  color: #2c3e50;
+  color: #1d1d1d;
   border-bottom: 2px solid #dee2e6;
 }
 
 td {
   padding: 1rem;
   border-bottom: 1px solid #dee2e6;
-  color: #34495e;
+  color: #1d1d1d;
 }
 
 tr:last-child td {
@@ -331,6 +332,6 @@ tr:last-child td {
 }
 
 .error {
-  color: #e74c3c;
+  color: #ff5722;
 }
 </style>
