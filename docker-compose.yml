@@ -1,9 +1,45 @@
+version: '3.8'
+
 services:
-  vue-app:
+  db:
+    image: postgres:15
+    container_name: biblioteca_db
+    environment:
+      POSTGRES_USER: biblioteca
+      POSTGRES_PASSWORD: biblioteca123
+      POSTGRES_DB: biblioteca
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U biblioteca"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.backend
+    container_name: biblioteca_backend
     ports:
-      - "8080:80"
-    container_name: vue3_app
-    restart: unless-stopped
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://biblioteca:biblioteca123@db:5432/biblioteca
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: biblioteca_frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
