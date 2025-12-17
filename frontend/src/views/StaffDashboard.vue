@@ -441,7 +441,7 @@ table {
 th {
   background: #f8f9fa;
   padding: 1rem;
-  text-align: left;
+  text-align: center;
   font-weight: 600;
   color: #2c3e50;
   border-bottom: 2px solid #dee2e6;

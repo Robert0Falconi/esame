@@ -66,13 +66,14 @@ URL: `http://localhost:5173`
 - Tessera: `LIB001` (Mario Rossi)
 - Tessera: `LIB002` (Laura Bianchi)
 - Tessera: `LIB003` (Giuseppe Verdi)
+- Tessera: `LIB004` (Eldar Dedic)
 
 ### Dashboard Staff
 URL: `http://localhost:5173/staff`
 
 **Credenziali Staff:**
-- Tessera: `STAFF001` (Roberto Conti)
-- Tessera: `STAFF002` (Elena Barbieri)
+- Tessera: `STAFF001` (Roberto Falconi)
+- Tessera: `STAFF002` (Carlotta Forlino)
 
 ### API Backend
 URL: `http://localhost:8000`
