@@ -106,11 +106,11 @@ def return_loan(
 def get_user_loans(user_id: int, db: Session = Depends(get_db)):
     return crud.get_user_loans(db, user_id)
 
-@app.get("/api/v1/loans/active/", response_model=List[schemas.Loan])
+@app.get("/api/v1/loans/active/", response_model=List[schemas.LoanWithDetails])
 def get_active_loans(db: Session = Depends(get_db)):
     return crud.get_active_loans(db)
 
-@app.get("/api/v1/loans/overdue/", response_model=List[schemas.Loan])
+@app.get("/api/v1/loans/overdue/", response_model=List[schemas.LoanWithDetails])
 def get_overdue_loans(db: Session = Depends(get_db)):
     return crud.get_overdue_loans(db)
 

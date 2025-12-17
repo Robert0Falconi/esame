@@ -26,7 +26,8 @@
     </main>
 
     <footer class="footer">
-      <p>&copy; 2024 Sistema Gestione Biblioteca - Tutti i diritti riservati</p>
+      <!-- Anno dinamico -->
+      <p>&copy; {{ new Date().getFullYear() }} Sistema Gestione Biblioteca - Tutti i diritti riservati</p>
     </footer>
   </div>
 </template>

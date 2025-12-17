@@ -23,16 +23,10 @@
     </div>
 
     <div class="tabs">
-      <button 
-        :class="['tab', { active: activeTab === 'overdue' }]" 
-        @click="activeTab = 'overdue'"
-      >
+      <button :class="['tab', { active: activeTab === 'overdue' }]" @click="activeTab = 'overdue'">
         Prestiti in Ritardo ({{ overdueLoans.length }})
       </button>
-      <button 
-        :class="['tab', { active: activeTab === 'active' }]" 
-        @click="activeTab = 'active'"
-      >
+      <button :class="['tab', { active: activeTab === 'active' }]" @click="activeTab = 'active'">
         Tutti i Prestiti Attivi ({{ activeLoans.length }})
       </button>
     </div>
@@ -59,8 +53,8 @@
             </thead>
             <tbody>
               <tr v-for="loan in overdueLoans" :key="loan.id" class="overdue-row">
-                <td>{{ getUserName(loan.user_id) }}</td>
-                <td>{{ getBookTitle(loan.book_id) }}</td>
+                <td>{{ loan.user.first_name }} {{ loan.user.last_name }}</td>
+                <td>{{ loan.book.title }}</td>
                 <td>{{ formatDate(loan.start_date) }}</td>
                 <td>{{ formatDate(loan.expected_return_date) }}</td>
                 <td class="warning-text">{{ calculateDaysLate(loan.expected_return_date) }}</td>
@@ -94,8 +88,8 @@
             </thead>
             <tbody>
               <tr v-for="loan in activeLoans" :key="loan.id">
-                <td>{{ getUserName(loan.user_id) }}</td>
-                <td>{{ getBookTitle(loan.book_id) }}</td>
+                <td>{{ loan.user.first_name }} {{ loan.user.last_name }}</td>
+                <td>{{ loan.book.title }}</td>
                 <td>{{ formatDate(loan.start_date) }}</td>
                 <td>{{ formatDate(loan.expected_return_date) }}</td>
                 <td>
@@ -119,21 +113,21 @@
       <div class="modal-content" @click.stop>
         <h2>Registra Restituzione</h2>
         <div class="modal-info">
-          <p><strong>Libro:</strong> {{ getBookTitle(returnModal.loan?.book_id) }}</p>
-          <p><strong>Utente:</strong> {{ getUserName(returnModal.loan?.user_id) }}</p>
+          <p><strong>Utente:</strong> {{ returnModal.loan?.user.first_name }} {{ returnModal.loan?.user.last_name }}</p>
+          <p><strong>Libro:</strong> {{ returnModal.loan?.book.title }}</p>
           <p><strong>Scadenza:</strong> {{ formatDate(returnModal.loan?.expected_return_date) }}</p>
         </div>
-        
+
         <form @submit.prevent="processReturn">
           <div class="form-group">
             <label style="position: relative !important;">Data Restituzione Effettiva</label>
             <input type="date" v-model="returnModal.returnDate" required :max="today" />
           </div>
-          
+
           <div v-if="returnModal.penalty > 0" class="penalty-warning">
             ⚠️ Penale da applicare: <strong>€ {{ returnModal.penalty.toFixed(2) }}</strong>
           </div>
-          
+
           <div class="modal-actions">
             <button type="button" @click="closeReturnModal" class="btn btn-secondary">
               Annulla
@@ -142,7 +136,7 @@
               {{ submitting ? 'Elaborazione...' : 'Conferma Restituzione' }}
             </button>
           </div>
-          
+
           <p v-if="returnModal.error" class="error">{{ returnModal.error }}</p>
           <p v-if="returnModal.success" class="success">{{ returnModal.success }}</p>
         </form>
@@ -218,7 +212,7 @@ export default {
       try {
         // Prima aggiorna lo stato dei prestiti
         await api.updateOverdueStatus()
-        
+
         const [active, overdue] = await Promise.all([
           api.getActiveLoans(),
           api.getOverdueLoans()
@@ -227,29 +221,26 @@ export default {
         activeLoans.value = active
         overdueLoans.value = overdue
 
-        const userIds = [...new Set([...active, ...overdue].map(l => l.user_id))]
-        const bookIds = [...new Set([...active, ...overdue].map(l => l.book_id))]
+        const loadData = async () => {
+          loading.value = true
+          error.value = ''
+          try {
+            await api.updateOverdueStatus()
 
-        await Promise.all([
-          ...userIds.map(async (id) => {
-            if (!users.value[id]) {
-              try {
-                users.value[id] = await api.getUserByCard(`LIB${String(id).padStart(3, '0')}`)
-              } catch (err) {
-                console.error(`Error loading user ${id}:`, err)
-              }
-            }
-          }),
-          ...bookIds.map(async (id) => {
-            if (!books.value[id]) {
-              try {
-                books.value[id] = await api.getBook(id)
-              } catch (err) {
-                console.error(`Error loading book ${id}:`, err)
-              }
-            }
-          })
-        ])
+            const [active, overdue] = await Promise.all([
+              api.getActiveLoans(),
+              api.getOverdueLoans()
+            ])
+
+            activeLoans.value = active
+            overdueLoans.value = overdue
+          } catch (err) {
+            error.value = err.message
+          } finally {
+            loading.value = false
+          }
+        }
+
       } catch (err) {
         error.value = err.message
       } finally {
@@ -299,7 +290,7 @@ export default {
       try {
         await api.returnLoan(returnModal.value.loan.id, returnModal.value.returnDate)
         returnModal.value.success = 'Restituzione registrata con successo!'
-        
+
         setTimeout(async () => {
           closeReturnModal()
           await loadData()
