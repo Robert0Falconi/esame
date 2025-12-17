@@ -1,5 +1,4 @@
 from sqlalchemy.orm import Session
-from sqlalchemy.orm import joinedload
 from sqlalchemy import and_, or_
 from datetime import date, timedelta
 from decimal import Decimal
@@ -66,26 +65,15 @@ def get_user_loans(db: Session, user_id: int):
     return db.query(models.Loan).filter(models.Loan.user_id == user_id).order_by(models.Loan.start_date.desc()).all()
 
 def get_active_loans(db: Session):
-    return (
-        db.query(models.Loan)
-        .options(
-            joinedload(models.Loan.user),
-            joinedload(models.Loan.book)
-        )
-        .filter(models.Loan.status.in_(["in_corso", "in_ritardo"]))
-        .all()
-    )
+    return db.query(models.Loan).filter(
+        models.Loan.status.in_(["in_corso", "in_ritardo"])
+    ).all()
 
 def get_overdue_loans(db: Session):
-    return (
-        db.query(models.Loan)
-        .options(
-            joinedload(models.Loan.user),
-            joinedload(models.Loan.book)
-        )
-        .filter(models.Loan.status == "in_ritardo")
-        .all()
-    )
+    today = date.today()
+    return db.query(models.Loan).filter(
+        models.Loan.status == "in_ritardo"
+    ).all()
 
 def count_active_user_loans(db: Session, user_id: int) -> int:
     return db.query(models.Loan).filter(
@@ -99,7 +87,7 @@ def create_loan(db: Session, loan: schemas.LoanCreate):
     # Check if user has reached max loans
     active_loans = count_active_user_loans(db, loan.user_id)
     if active_loans >= settings.MAX_LOANS_PER_USER:
-        raise ValueError(f"Utente ha raggiunto il limite di {settings.MAX_LOANS_PER_USER} prestiti attivi")
+        raise ValueError(f"Hai raggiunto il limite di {settings.MAX_LOANS_PER_USER} prestiti simultanei. Restituisci un libro prima di prenotarne altri.")
     
     # Check book availability
     book = get_book(db, loan.book_id)

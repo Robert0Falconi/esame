@@ -12,10 +12,10 @@ class Settings(BaseSettings):
     # Business Rules
     DEFAULT_LOAN_DAYS: int = 14
     PENALTY_PER_DAY: float = 0.50  # Euro per giorno di ritardo
-    MAX_LOANS_PER_USER: int = 5
+    MAX_LOANS_PER_USER: int = 3  # Limite prestiti simultanei
     
     # CORS
-    BACKEND_CORS_ORIGINS: list = ["http://localhost:5173", "http://localhost:8080"]
+    BACKEND_CORS_ORIGINS: list = ["http://localhost:5173", "http://localhost:8080", "http://localhost:3000"]
     
     class Config:
         env_file = ".env"

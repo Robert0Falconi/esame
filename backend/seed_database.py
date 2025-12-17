@@ -10,7 +10,7 @@ from sqlalchemy.orm import Session
 from app.database import SessionLocal, engine
 from app import models
 
-# Sample data
+# Dati di esempio
 BOOKS_DATA = [
     {"isbn": "9788804668527", "title": "Il Nome della Rosa", "author": "Umberto Eco", "genre": "Romanzo Storico", "total_copies": 3},
     {"isbn": "9788807881596", "title": "L'Ombra del Vento", "author": "Carlos Ruiz Zafón", "genre": "Romanzo Storico", "total_copies": 2},
@@ -36,9 +36,9 @@ BOOKS_DATA = [
 
 USERS_DATA = [
     {"library_card": "LIB001", "first_name": "Marco", "last_name": "Di Pasquale", "email": "marco.di.pasquale@email.it", "is_staff": False},
-    {"library_card": "LIB004", "first_name": "Eldar", "last_name": "Dedic", "email": "eldar.dedic@email.it", "is_staff": False},
-    {"library_card": "LIB005", "first_name": "Francesco", "last_name": "Gallo", "email": "francesco.gallo@email.it", "is_staff": False},
-    {"library_card": "LIB006", "first_name": "Andrea", "last_name": "Calabrò", "email": "andrea.calabro@email.it", "is_staff": False},
+    {"library_card": "LIB002", "first_name": "Eldar", "last_name": "Dedic", "email": "eldar.dedic@email.it", "is_staff": False},
+    {"library_card": "LIB003", "first_name": "Francesco", "last_name": "Gallo", "email": "francesco.gallo@email.it", "is_staff": False},
+    {"library_card": "LIB004", "first_name": "Andrea", "last_name": "Calabrò", "email": "andrea.calabro@email.it", "is_staff": False},
     {"library_card": "STAFF001", "first_name": "Roberto", "last_name": "Falconi", "email": "roberto.falconi@biblioteca.it", "is_staff": True},
     {"library_card": "STAFF002", "first_name": "Carlotta", "last_name": "Forlino", "email": "carlotta.forlino@biblioteca.it", "is_staff": True},
 ]
@@ -52,7 +52,7 @@ def seed_database():
     db = SessionLocal()
     
     try:
-        # Check se il database è già popolato
+        # Check if database is already populated
         if db.query(models.Book).count() > 0:
             print("Database già popolato. Eliminazione dati esistenti...")
             db.query(models.Loan).delete()
@@ -90,20 +90,29 @@ def seed_database():
         loans_count = 0
         start_date = date.today() - timedelta(days=180)
         
+        # Traccia i prestiti attivi per utente
+        active_loans_per_user = {u.id: 0 for u in users if not u.is_staff}
+        
         # Generate random loans
-        for _ in range(150):  # 150 prestiti negli ultimi 6 mesi
+        attempts = 0
+        max_attempts = 500  # Evita loop infiniti
+        
+        while loans_count < 150 and attempts < max_attempts:
+            attempts += 1
+            
+            # Seleziona utente casuale (non staff)
             user = random.choice([u for u in users if not u.is_staff])
             book = random.choice(books)
             
             loan_start = start_date + timedelta(days=random.randint(0, 179))
-            loan_duration = 14  # 2 settimane
+            loan_duration = 30  # 1 mese
             expected_return = loan_start + timedelta(days=loan_duration)
             
             # 70% dei prestiti sono restituiti
             is_returned = random.random() < 0.7
             
             if is_returned:
-                # Alcuni restituiti in tempo, altri in ritardo
+                # Prestito restituito - non conta nel limite
                 if random.random() < 0.8:
                     # Restituito in tempo
                     actual_return = expected_return - timedelta(days=random.randint(0, 3))
@@ -125,8 +134,13 @@ def seed_database():
                     status="restituito",
                     penalty_amount=penalty
                 )
+                db.add(loan)
+                loans_count += 1
             else:
-                # Prestito ancora in corso
+                # Prestito attivo - controlla il limite di 3
+                if active_loans_per_user[user.id] >= 3:
+                    continue  # Salta questo utente, ha già 3 prestiti attivi
+                
                 status = "in_corso"
                 if expected_return < date.today():
                     status = "in_ritardo"
@@ -142,12 +156,13 @@ def seed_database():
                 # Decrementa copie disponibili per prestiti attivi
                 if book.available_copies > 0:
                     book.available_copies -= 1
-            
-            db.add(loan)
-            loans_count += 1
+                
+                db.add(loan)
+                loans_count += 1
+                active_loans_per_user[user.id] += 1
         
         db.commit()
-        print(f"✓ {loans_count} prestiti generati")
+        print(f"✓ {loans_count} prestiti generati (rispettando limite di 3 prestiti attivi per utente)")
         
         # Statistics
         print("\n=== STATISTICHE DATABASE ===")
