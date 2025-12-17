@@ -94,7 +94,7 @@
                 <td>{{ formatDate(loan.expected_return_date) }}</td>
                 <td>
                   <span :class="['status-badge', loan.status]">
-                    {{ loan.status === 'in_corso' ? 'In Corso' : 'In Ritardo' }}
+                    {{ loan.status === 'in_corso' ? 'In&nbsp;Corso' : 'In&nbsp;Ritardo' }}
                   </span>
                 </td>
                 <td>
@@ -492,7 +492,7 @@ tr.overdue-row {
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: #2980b9;
+  background: #0c5851;
 }
 
 .btn-secondary {

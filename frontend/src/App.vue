@@ -27,7 +27,7 @@
 
     <footer class="footer">
       <!-- Anno dinamico -->
-      <p class="mb-0">&copy;{{ new Date().getFullYear() }} <a href="www.falconigrafica.it">Falconigrafica</a> | Sistema Gestione Biblioteca</p>
+      <p class="mb-0">&copy;{{ new Date().getFullYear() }} <a href="https://www.falconigrafica.it/">Falconigrafica</a> | Sistema Gestione Biblioteca</p>
     </footer>
   </div>
 </template>

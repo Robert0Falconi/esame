@@ -1,6 +1,7 @@
 <template>
   <div class="home">
     <div class="hero">
+      <img src="/icons/logo.png" alt="Logo Biblioteca" class="logo" style="width: 100px; border-radius: 50%;">
       <h1>Biblioteca Comunale</h1>
       <p class="subtitle">Sistema di Gestione Prestiti</p>
     </div>
@@ -178,7 +179,7 @@ export default {
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: #2980b9;
+  background: #0c5851;
 }
 
 .btn-primary:disabled {

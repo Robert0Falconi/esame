@@ -36,7 +36,7 @@ class ApiService {
   // Users
   async getUserByCard(libraryCard) {
     const response = await fetch(`${API_BASE_URL}/users/card/${libraryCard}`);
-    if (!response.ok) throw new Error('Utente non trovato');
+    if (!response.ok) throw new Error('Utente non trovato. Non hai la tessera? Fila in Biblioteca.');
     return response.json();
   }
 

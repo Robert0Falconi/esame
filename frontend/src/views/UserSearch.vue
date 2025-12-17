@@ -1,5 +1,9 @@
 <template>
   <div class="search-page">
+    <div class="info-banner">
+      <span class="info-icon">ℹ️</span>
+      <span>Puoi avere massimo <strong>3 prestiti simultanei</strong>. Restituisci un libro prima di prenotarne altri.</span>
+    </div>
 
     <div class="search-form card px-5">
       <div class="form-row d-flex flex-column">
@@ -59,27 +63,67 @@
       </div>
     </div>
 
-    <!-- Modal per prenotazione -->
+    <!-- MODAL SENZA CALENDARIO -->
     <div v-if="selectedBook" class="modal" @click="closeModal">
       <div class="modal-content" @click.stop>
         <h2>Prenota Prestito</h2>
-        <p><strong>{{ selectedBook.title }}</strong> di {{ selectedBook.author }}</p>
+        
+        <div class="book-title">
+          <strong>{{ selectedBook.title }}</strong>
+          <p class="author">di {{ selectedBook.author }}</p>
+        </div>
+        
+        <div class="loan-info-box">
+          <div class="info-row">
+            <span class="info-icon">⏱️</span>
+            <div>
+              <strong>Durata prestito:</strong>
+              <p>30 giorni (1 mese) dalla data di prenotazione</p>
+            </div>
+          </div>
+          
+          <div class="info-row">
+            <span class="info-icon">📅</span>
+            <div>
+              <strong>Data restituzione prevista:</strong>
+              <p>{{ returnDate }}</p>
+            </div>
+          </div>
+          
+          <div class="info-row warning">
+            <span class="info-icon">⚠️</span>
+            <div>
+              <strong>Attenzione:</strong>
+              <p>Penale di €0.50 al giorno per ogni giorno di ritardo</p>
+            </div>
+          </div>
+        </div>
 
         <form @submit.prevent="createLoan">
-          <div class="form-group">
+          <div v-if="!isAuthenticated" class="form-group">
             <label>Numero Tessera Biblioteca</label>
-            <input v-model="loanForm.libraryCard" required placeholder="es. LIB001" />
+            <input 
+              v-model="loanForm.libraryCard" 
+              required 
+              placeholder="es. LIB001"
+              autocomplete="off"
+            />
           </div>
-          <div class="form-group">
-            <label>Data Restituzione Prevista</label>
-            <input type="date" v-model="loanForm.returnDate" required :min="tomorrow" />
+          
+          <div v-else class="user-logged-info">
+            <p>📋 Prenotazione per: <strong>{{ currentUser.first_name }} {{ currentUser.last_name }}</strong></p>
+            <p class="library-card">Tessera: {{ currentUser.library_card }}</p>
           </div>
+          
           <div class="modal-actions">
-            <button type="button" @click="closeModal" class="btn btn-secondary">Annulla</button>
+            <button type="button" @click="closeModal" class="btn btn-secondary">
+              Annulla
+            </button>
             <button type="submit" class="btn btn-primary" :disabled="submitting">
               {{ submitting ? 'Prenotazione...' : 'Conferma Prestito' }}
             </button>
           </div>
+          
           <p v-if="loanError" class="error">{{ loanError }}</p>
           <p v-if="loanSuccess" class="success">{{ loanSuccess }}</p>
         </form>
@@ -91,10 +135,12 @@
 <script>
 import { ref, reactive, onMounted, computed } from 'vue'
 import api from '../services/api'
+import { useAuthStore } from '../stores/authStore'
 
 export default {
   name: 'UserSearch',
   setup() {
+    const authStore = useAuthStore()
     const books = ref([])
     const genres = ref([])
     const loading = ref(false)
@@ -112,15 +158,27 @@ export default {
     })
 
     const loanForm = reactive({
-      libraryCard: '',
-      returnDate: ''
+      libraryCard: ''
     })
 
-    const tomorrow = computed(() => {
+    const isAuthenticated = computed(() => authStore.isAuthenticated.value)
+    const currentUser = computed(() => authStore.currentUser.value)
+
+    const returnDate = computed(() => {
       const date = new Date()
-      date.setDate(date.getDate() + 1)
-      return date.toISOString().split('T')[0]
+      date.setDate(date.getDate() + 30)
+      return date.toLocaleDateString('it-IT', { 
+        day: '2-digit', 
+        month: 'long', 
+        year: 'numeric' 
+      })
     })
+
+    const getReturnDateISO = () => {
+      const date = new Date()
+      date.setDate(date.getDate() + 30)
+      return date.toISOString().split('T')[0]
+    }
 
     const loadGenres = async () => {
       try {
@@ -153,7 +211,6 @@ export default {
     const closeModal = () => {
       selectedBook.value = null
       loanForm.libraryCard = ''
-      loanForm.returnDate = ''
       loanError.value = ''
       loanSuccess.value = ''
     }
@@ -164,18 +221,27 @@ export default {
       loanSuccess.value = ''
 
       try {
-        const user = await api.getUserByCard(loanForm.libraryCard)
+        let userId
+        
+        // Se l'utente è loggato, usa il suo ID
+        if (isAuthenticated.value && currentUser.value) {
+          userId = currentUser.value.id
+        } else {
+          // Altrimenti, cerca per tessera
+          const user = await api.getUserByCard(loanForm.libraryCard)
+          userId = user.id
+        }
 
         await api.createLoan({
-          user_id: user.id,
+          user_id: userId,
           book_id: selectedBook.value.id,
-          expected_return_date: loanForm.returnDate
+          expected_return_date: getReturnDateISO()
         })
 
         loanSuccess.value = 'Prestito registrato con successo!'
         setTimeout(() => {
           closeModal()
-          handleSearch() // Refresh disponibilità
+          handleSearch()
         }, 2000)
       } catch (err) {
         loanError.value = err.message
@@ -204,7 +270,9 @@ export default {
       submitting,
       loanError,
       loanSuccess,
-      tomorrow
+      returnDate,
+      isAuthenticated,
+      currentUser
     }
   }
 }
@@ -220,6 +288,30 @@ export default {
 h1 {
   color: #1d1d1d;
   margin-bottom: 2rem;
+}
+
+.info-banner {
+  background: #e8f5e9;
+  border-left: 4px solid #009688;
+  padding: 1rem 1.5rem;
+  margin-bottom: 1.5rem;
+  border-radius: 4px;
+  color: #00695c;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.info-icon {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.info-banner strong {
+  font-weight: 600;
+  color: #004d40;
 }
 
 .card {
@@ -287,7 +379,7 @@ h1 {
   flex: 1;
 }
 
-.book-card h3 {
+.book-card h4 {
   color: #1d1d1d;
   margin-bottom: 0.5rem;
 }
@@ -356,7 +448,7 @@ h1 {
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: #2980b9;
+  background: #00796b;
 }
 
 .btn-secondary {
@@ -370,7 +462,7 @@ h1 {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -380,19 +472,127 @@ h1 {
 .modal-content {
   background: white;
   padding: 2rem;
-  border-radius: 8px;
-  max-width: 500px;
+  border-radius: 12px;
+  max-width: 550px;
   width: 90%;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content h2 {
+  color: #1d1d1d;
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+}
+
+.book-title {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #ecf0f1;
+}
+
+.book-title strong {
+  font-size: 1.2rem;
+  color: #1d1d1d;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.book-title .author {
+  color: #7f8c8d;
+  font-style: italic;
+  margin: 0;
+}
+
+.loan-info-box {
+  background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+  border-left: 5px solid #009688;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  border-radius: 8px;
+}
+
+.info-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  align-items: flex-start;
+}
+
+.info-row:last-child {
+  margin-bottom: 0;
+}
+
+.info-row.warning {
+  background: #fff3cd;
+  padding: 1rem;
+  border-radius: 6px;
+  border-left: 3px solid #ffc107;
+  margin-top: 1rem;
+}
+
+.info-row .info-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.info-row strong {
+  color: #004d40;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.info-row p {
+  color: #00695c;
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.info-row.warning strong,
+.info-row.warning p {
+  color: #856404;
+}
+
+.user-logged-info {
+  background: #e3f2fd;
+  border-left: 4px solid #2196f3;
+  padding: 1rem 1.5rem;
+  margin: 1.5rem 0;
+  border-radius: 6px;
+}
+
+.user-logged-info p {
+  margin: 0.5rem 0;
+  color: #1565c0;
+  font-size: 0.95rem;
+}
+
+.user-logged-info p:first-child {
+  font-size: 1rem;
+}
+
+.user-logged-info strong {
+  color: #0d47a1;
+  font-weight: 600;
+}
+
+.library-card {
+  font-size: 0.9rem !important;
+  color: #42a5f5 !important;
+  font-family: monospace;
 }
 
 .modal-actions {
   display: flex;
   gap: 1rem;
-  margin-top: 1rem;
+  margin-top: 1.5rem;
 }
 
 .modal-actions button {
   flex: 1;
+  padding: 0.875rem;
+  border-radius: 6px;
+  font-weight: 600;
 }
 
 .loading,
@@ -404,10 +604,17 @@ h1 {
 
 .error {
   color: #ff5722;
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background: #fadbd8;
+  border-radius: 6px;
 }
 
 .success {
   color: #27ae60;
   margin-top: 1rem;
+  padding: 0.75rem;
+  background: #d5f4e6;
+  border-radius: 6px;
 }
 </style>

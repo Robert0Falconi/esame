@@ -3,7 +3,7 @@
     <div class="header">
       <h1>I Miei Prestiti</h1>
       <router-link to="/search" class="btn btn-primary">
-        📚 Cerca Nuovi Libri
+        Cerca Nuovi Libri
       </router-link>
     </div>
 
@@ -12,7 +12,15 @@
     <div v-else>
       <!-- Prestiti Attivi -->
       <div class="section">
-        <h2>Prestiti Attivi</h2>
+        <div class="section-header">
+          <h2>Prestiti Attivi</h2>
+          <div class="loan-counter" :class="{ 'limit-reached': activeLoans.length >= 3 }">
+            {{ activeLoans.length }} / 3 prestiti
+          </div>
+        </div>
+        <div v-if="activeLoans.length >= 3" class="warning-banner">
+          ⚠️ Hai raggiunto il limite massimo di prestiti. Restituisci un libro per prenotarne altri.
+        </div>
         <div v-if="activeLoans.length === 0" class="no-data">
           Nessun prestito attivo
         </div>
@@ -20,7 +28,7 @@
           <div v-for="loan in activeLoans" :key="loan.id" class="loan-card">
             <div class="loan-header">
               <span :class="['status-badge', loan.status]">
-                {{ loan.status === 'in_corso' ? 'In Corso' : 'In Ritardo' }}
+                {{ loan.status === 'in_corso' ? 'In&nbsp;Corso' : 'In&nbsp;Ritardo' }}
               </span>
               <span v-if="loan.status === 'in_ritardo'" class="warning">⚠️</span>
             </div>
@@ -60,7 +68,7 @@
                 <td>{{ formatDate(loan.actual_return_date) }}</td>
                 <td>
                   <span :class="['status-badge', wasLate(loan) ? 'late' : 'on-time']">
-                    {{ wasLate(loan) ? 'In Ritardo' : 'In Tempo' }}
+                    {{ wasLate(loan) ? 'In&nbsp;Ritardo' : 'In&nbsp;Tempo' }}
                   </span>
                 </td>
                 <td>{{ formatPenalty(loan.penalty_amount) }}</td>
@@ -184,7 +192,7 @@ export default {
 }
 
 h1 {
-  color: #1d1d1d;
+  color: #2c3e50;
 }
 
 .btn {
@@ -198,12 +206,12 @@ h1 {
 }
 
 .btn-primary {
-  background: #009688;
+  background: black;
   color: white;
 }
 
 .btn-primary:hover {
-  background: #2980b9;
+  background: #0c5851;
 }
 
 .section {
@@ -211,10 +219,46 @@ h1 {
 }
 
 .section h2 {
-  color: #1d1d1d;
+  color: #2c3e50;
   margin-bottom: 1rem;
   padding-bottom: 0.5rem;
-  border-bottom: 2px solid #009688;
+  border-bottom: 2px solid black;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.section-header h2 {
+  margin-bottom: 0;
+  border-bottom: none;
+}
+
+.loan-counter {
+  background: #d4edda;
+  color: #155724;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.loan-counter.limit-reached {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.warning-banner {
+  background: #fff3cd;
+  border-left: 4px solid #ffc107;
+  padding: 1rem 1.5rem;
+  margin-bottom: 1rem;
+  border-radius: 4px;
+  color: #856404;
+  font-weight: 500;
 }
 
 .loans-grid {
@@ -236,7 +280,6 @@ h1 {
   align-items: center;
   margin-bottom: 1rem;
 }
-
 
 .status-badge {
   display: inline-block;
@@ -262,7 +305,7 @@ h1 {
 }
 
 .status-badge.late {
-  background: #ffffff;
+  background: #fff3cd;
   color: #856404;
 }
 
@@ -271,17 +314,17 @@ h1 {
 }
 
 .loan-card h3 {
-  color: #1d1d1d;
+  color: #2c3e50;
   margin-bottom: 1rem;
 }
 
 .loan-details p {
   margin: 0.5rem 0;
-  color: #1d1d1d;
+  color: #34495e;
 }
 
 .warning-text {
-  color: #ff5722;
+  color: #e74c3c;
   font-weight: 500;
 }
 
@@ -301,16 +344,16 @@ table {
 th {
   background: #f8f9fa;
   padding: 1rem;
-  text-align: center;
+  text-align: left;
   font-weight: 600;
-  color: #1d1d1d;
+  color: #2c3e50;
   border-bottom: 2px solid #dee2e6;
 }
 
 td {
   padding: 1rem;
   border-bottom: 1px solid #dee2e6;
-  color: #1d1d1d;
+  color: #34495e;
 }
 
 tr:last-child td {
@@ -332,6 +375,6 @@ tr:last-child td {
 }
 
 .error {
-  color: #ff5722;
+  color: #e74c3c;
 }
 </style>
