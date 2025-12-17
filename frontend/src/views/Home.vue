@@ -10,16 +10,15 @@
         <h2>Accesso Utente</h2>
         <form @submit.prevent="handleUserLogin">
           <div class="form-group">
-            <label for="library-card">Numero Tessera Biblioteca</label>
             <input 
               type="text" 
               id="library-card" 
               v-model="libraryCard" 
-              placeholder="es. LIB001 o STAFF001"
+              placeholder="Numero tessera biblioteca (es. LIB001 o STAFF001)"
               required
             />
           </div>
-          <button type="submit" class="btn btn-primary" :disabled="loading">
+          <button type="submit" class="btn btn-primary mt-3" :disabled="loading">
             {{ loading ? 'Caricamento...' : 'Accedi' }}
           </button>
           <p v-if="error" class="error">{{ error }}</p>
@@ -28,21 +27,6 @@
           Inserisci il numero della tua tessera biblioteca per accedere. 
           Il personale può usare le credenziali staff.
         </p>
-      </div>
-    </div>
-
-    <div class="features">
-      <div class="feature">
-        <h3>🔍 Ricerca Libri</h3>
-        <p>Cerca tra migliaia di titoli per autore, genere o titolo</p>
-      </div>
-      <div class="feature">
-        <h3>📚 Prestiti Online</h3>
-        <p>Prenota i tuoi libri preferiti direttamente online</p>
-      </div>
-      <div class="feature">
-        <h3>📊 Storico Personale</h3>
-        <p>Consulta lo storico dei tuoi prestiti e rinnovi</p>
       </div>
     </div>
   </div>
@@ -108,7 +92,7 @@ export default {
 
 <style scoped>
 .home {
-  max-width: 1200px;
+  max-width: 800px;
   margin: 0 auto;
   padding: 2rem;
 }
@@ -153,10 +137,12 @@ export default {
 }
 
 .form-group label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 500;
-  color: #34495e;
+    display: block;
+    margin-bottom: -8px;
+    color: #34495e;
+    text-align: left;
+    padding-left: 0px;
+    font-weight: 600;
 }
 
 .form-group input {
@@ -222,27 +208,5 @@ export default {
   text-align: center;
   padding-top: 1rem;
   border-top: 1px solid #ecf0f1;
-}
-
-.features {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
-  margin-top: 3rem;
-}
-
-.feature {
-  text-align: center;
-  padding: 1.5rem;
-}
-
-.feature h3 {
-  font-size: 1.5rem;
-  margin-bottom: 0.5rem;
-  color: #2c3e50;
-}
-
-.feature p {
-  color: #7f8c8d;
 }
 </style>

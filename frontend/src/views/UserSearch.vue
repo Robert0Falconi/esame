@@ -1,25 +1,27 @@
 <template>
   <div class="search-page">
-    <h1>Cerca Libri</h1>
-    
-    <div class="search-form card">
-      <div class="form-row">
-        <div class="form-group">
-          <label>Titolo</label>
-          <input v-model="searchParams.title" @input="handleSearch" placeholder="Cerca per titolo..." />
-        </div>
-        <div class="form-group">
-          <label>Autore</label>
-          <input v-model="searchParams.author" @input="handleSearch" placeholder="Cerca per autore..." />
-        </div>
-        <div class="form-group">
-          <label>Genere</label>
-          <select v-model="searchParams.genre" @change="handleSearch">
-            <option value="">Tutti i generi</option>
-            <option v-for="genre in genres" :key="genre" :value="genre">
-              {{ genre }}
-            </option>
-          </select>
+
+    <div class="search-form card px-5">
+      <div class="form-row d-flex flex-column">
+        <h1 class="mb-0">Cerca Libri</h1>
+        <div class="row">
+          <div class="form-group col-12 col-lg-4 pb-2 pb-lg-0">
+            <label>Titolo</label>
+            <input v-model="searchParams.title" @input="handleSearch" placeholder="Cerca per titolo..." />
+          </div>
+          <div class="form-group col-12 col-lg-4 pb-2 pb-lg-0">
+            <label>Autore</label>
+            <input v-model="searchParams.author" @input="handleSearch" placeholder="Cerca per autore..." />
+          </div>
+          <div class="form-group col-12 col-lg-4">
+            <label>Genere</label>
+            <select v-model="searchParams.genre" @change="handleSearch">
+              <option value="">Tutti i generi</option>
+              <option v-for="genre in genres" :key="genre" :value="genre">
+                {{ genre }}
+              </option>
+            </select>
+          </div>
         </div>
       </div>
       <div class="checkbox-group">
@@ -51,11 +53,7 @@
             <span class="copies">{{ book.available_copies }}/{{ book.total_copies }} copie</span>
           </div>
         </div>
-        <button 
-          v-if="book.available_copies > 0" 
-          @click="selectBook(book)" 
-          class="btn btn-primary"
-        >
+        <button v-if="book.available_copies > 0" @click="selectBook(book)" class="btn btn-primary">
           Prenota
         </button>
       </div>
@@ -66,7 +64,7 @@
       <div class="modal-content" @click.stop>
         <h2>Prenota Prestito</h2>
         <p><strong>{{ selectedBook.title }}</strong> di {{ selectedBook.author }}</p>
-        
+
         <form @submit.prevent="createLoan">
           <div class="form-group">
             <label>Numero Tessera Biblioteca</label>
@@ -105,14 +103,14 @@ export default {
     const submitting = ref(false)
     const loanError = ref('')
     const loanSuccess = ref('')
-    
+
     const searchParams = reactive({
       title: '',
       author: '',
       genre: '',
       available_only: true
     })
-    
+
     const loanForm = reactive({
       libraryCard: '',
       returnDate: ''
@@ -167,7 +165,7 @@ export default {
 
       try {
         const user = await api.getUserByCard(loanForm.libraryCard)
-        
+
         await api.createLoan({
           user_id: user.id,
           book_id: selectedBook.value.id,
@@ -241,9 +239,11 @@ h1 {
 
 .form-group label {
   display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 500;
+  margin-bottom: -8px;
   color: #34495e;
+  text-align: left;
+  padding-left: 0px;
+  font-weight: 600;
 }
 
 .form-group input,

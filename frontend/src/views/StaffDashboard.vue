@@ -541,10 +541,12 @@ tr.overdue-row {
 }
 
 .form-group label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 500;
-  position: relative !important;
+    display: block;
+    margin-bottom: -8px;
+    color: #34495e;
+    text-align: left;
+    padding-left: 0px;
+    font-weight: 600;
 }
 
 .form-group input {
